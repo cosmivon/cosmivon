@@ -1,46 +1,111 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+
     // ===============================================================
     // Assumed Data Model
     // ===============================================================
-    // Collection: contacts
-    // Document ID: auto-generated
+    //
+    // Collection: users
+    // Document ID: {userId}
     // Fields:
-    //   - name: string (required, 1-100 chars)
-    //   - email: string (required, valid email format)
-    //   - company: string (optional, 0-100 chars)
-    //   - message: string (required, 1-5000 chars)
-    //   - createdAt: timestamp (required)
+    //   - uid: string (required, immutable) - Firebase Auth UID
+    //   - email: string (required, email format) - User's email
+    //   - displayName: string (optional) - User's display name
+    //   - photoURL: string (optional, URL format) - User's photo URL
+    //   - role: string (required, enum: ['admin', 'client']) - User's role
+    //   - createdAt: timestamp (required, immutable) - Creation timestamp
+    //
+    // Collection: contact_messages
+    // Document ID: {messageId}
+    // Fields:
+    //   - name: string (required, min: 1, max: 100) - Sender's name
+    //   - email: string (required, email format) - Sender's email
+    //   - company: string (optional, max: 100) - Sender's company
+    //   - message: string (required, min: 1, max: 2000) - Message content
+    //   - createdAt: timestamp (required, immutable) - Creation timestamp
+    //
     // ===============================================================
 
+    // ===============================================================
     // Helper Functions
+    // ===============================================================
+
     function isAuthenticated() {
       return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() &&
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
+          (request.auth.token.email == "krseenu187@gmail.com" && request.auth.token.email_verified == true));
+    }
+
+    function hasRequiredFields(fields) {
+      return request.resource.data.keys().hasAll(fields);
+    }
+
+    function hasOnlyAllowedFields(fields) {
+      return request.resource.data.keys().hasOnly(fields);
     }
 
     function isValidEmail(email) {
       return email is string && email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
     }
 
-    function isValidContact(data) {
-      return data.keys().hasAll(['name', 'email', 'message', 'createdAt']) &&
-             data.name is string && data.name.size() > 0 && data.name.size() <= 100 &&
-             isValidEmail(data.email) &&
-             data.message is string && data.message.size() > 0 && data.message.size() <= 5000 &&
-             data.createdAt is timestamp &&
-             (!('company' in data) || (data.company is string && data.company.size() <= 100));
+    function isValidUrl(url) {
+      return url is string && (url.matches("^https://.*") || url.matches("^http://.*"));
     }
 
-    match /contacts/{contactId} {
-      // Anyone can submit a contact form, but only once (no updates/deletes)
-      allow create: if isValidContact(request.resource.data);
-      
-      // Only admins can read contact submissions
-      // For this prototype, we'll assume admin check via email or a specific role
-      // But since Auth isn't required for this version, we'll keep it locked down
-      allow read: if false; 
-      allow update, delete: if false;
+    // ===============================================================
+    // Domain Validators
+    // ===============================================================
+
+    function isValidUser(data) {
+      return hasRequiredFields(['uid', 'email', 'role', 'createdAt']) &&
+             hasOnlyAllowedFields(['uid', 'email', 'displayName', 'photoURL', 'role', 'createdAt']) &&
+             data.uid == request.auth.uid &&
+             isValidEmail(data.email) &&
+             data.role in ['admin', 'client'] &&
+             data.createdAt is timestamp;
+    }
+
+    function isValidContactMessage(data) {
+      return hasRequiredFields(['name', 'email', 'message', 'createdAt']) &&
+             hasOnlyAllowedFields(['name', 'email', 'company', 'message', 'createdAt']) &&
+             data.name is string && data.name.size() >= 1 && data.name.size() <= 100 &&
+             isValidEmail(data.email) &&
+             (!('company' in data) || (data.company is string && data.company.size() <= 100)) &&
+             data.message is string && data.message.size() >= 1 && data.message.size() <= 2000 &&
+             data.createdAt is timestamp;
+    }
+
+    // ===============================================================
+    // Match Rules
+    // ===============================================================
+
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow create: if isAuthenticated() && isValidUser(request.resource.data) && 
+                      (request.resource.data.role == 'client' || isAdmin());
+      allow update: if isAuthenticated() && isValidUser(request.resource.data) && 
+                      (request.resource.data.role == resource.data.role || isAdmin()) &&
+                      request.resource.data.uid == resource.data.uid &&
+                      request.resource.data.createdAt == resource.data.createdAt;
+    }
+
+    match /contact_messages/{messageId} {
+      allow read: if isAdmin();
+      allow create: if isValidContactMessage(request.resource.data);
+      allow update, delete: if isAdmin();
+    }
+
+    match /{path=**} {
+      allow read, write: if false;
     }
   }
 }

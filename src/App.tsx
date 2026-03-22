@@ -506,26 +506,30 @@ const Contact = () => {
     e.preventDefault();
     setStatus('loading');
     
-    const path = 'contacts';
+    const path = 'contact_messages';
     try {
-      // 1. Save to Firestore
+      // 1. Save to Firestore (Database storage)
       await addDoc(collection(db, path), {
-        ...formData,
+        name: formData.name,
+        email: formData.email,
+        company: formData.company,
+        message: formData.message,
         createdAt: serverTimestamp()
       });
 
-      // 2. Send Email via Backend
-      const response = await fetch('/api/contact', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
+      // 2. Submit to Netlify Forms (Triggers email notification)
+      const body = new URLSearchParams();
+      body.append('form-name', 'contact');
+      body.append('name', formData.name);
+      body.append('email', formData.email);
+      body.append('company', formData.company);
+      body.append('message', formData.message);
 
-      if (!response.ok) {
-        throw new Error('Failed to send email');
-      }
+      await fetch('/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: body.toString(),
+      });
 
       setStatus('success');
       setFormData({ name: '', email: '', company: '', message: '' });
@@ -570,13 +574,21 @@ const Contact = () => {
               </button>
             </motion.div>
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form 
+              name="contact" 
+              method="POST" 
+              data-netlify="true" 
+              onSubmit={handleSubmit} 
+              className="space-y-6"
+            >
+              <input type="hidden" name="form-name" value="contact" />
               <div className="grid sm:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <label className="text-xs font-bold uppercase tracking-wider text-white/40">Name</label>
                   <input 
                     required
                     type="text" 
+                    name="name"
                     value={formData.name}
                     onChange={e => setFormData({ ...formData, name: e.target.value })}
                     className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-[#00f2ff] transition-colors"
@@ -587,6 +599,7 @@ const Contact = () => {
                   <input 
                     required
                     type="email" 
+                    name="email"
                     value={formData.email}
                     onChange={e => setFormData({ ...formData, email: e.target.value })}
                     className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-[#00f2ff] transition-colors"
@@ -597,6 +610,7 @@ const Contact = () => {
                 <label className="text-xs font-bold uppercase tracking-wider text-white/40">Company (Optional)</label>
                 <input 
                   type="text" 
+                  name="company"
                   value={formData.company}
                   onChange={e => setFormData({ ...formData, company: e.target.value })}
                   className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-[#00f2ff] transition-colors"
@@ -607,6 +621,7 @@ const Contact = () => {
                 <textarea 
                   required
                   rows={4}
+                  name="message"
                   value={formData.message}
                   onChange={e => setFormData({ ...formData, message: e.target.value })}
                   className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-[#00f2ff] transition-colors resize-none"
