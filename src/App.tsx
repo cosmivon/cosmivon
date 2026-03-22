@@ -1,4 +1,4 @@
-import React, { useState, Component, ErrorInfo, ReactNode } from 'react';
+import React, { useState, Component, ErrorInfo, ReactNode, useEffect, useRef } from 'react';
 import { motion } from 'motion/react';
 import { 
   Cpu, 
@@ -80,7 +80,121 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
   }
 }
 
+// --- Starfield Background ---
+const Starfield = () => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let animationFrameId: number;
+    let w = window.innerWidth;
+    let h = window.innerHeight;
+
+    const resize = () => {
+      w = window.innerWidth;
+      h = window.innerHeight;
+      canvas.width = w;
+      canvas.height = h;
+    };
+
+    window.addEventListener('resize', resize);
+    resize();
+
+    const stars: { x: number; y: number; z: number; px: number; py: number }[] = [];
+    const numStars = 800;
+    const speed = 2.5;
+
+    for (let i = 0; i < numStars; i++) {
+      stars.push({
+        x: Math.random() * w - w / 2,
+        y: Math.random() * h - h / 2,
+        z: Math.random() * w,
+        px: 0,
+        py: 0
+      });
+    }
+
+    const draw = () => {
+      ctx.fillStyle = 'rgba(5, 5, 5, 0.2)';
+      ctx.fillRect(0, 0, w, h);
+
+      ctx.translate(w / 2, h / 2);
+
+      for (let i = 0; i < numStars; i++) {
+        const s = stars[i];
+        s.z -= speed;
+
+        if (s.z <= 0) {
+          s.z = w;
+          s.x = Math.random() * w - w / 2;
+          s.y = Math.random() * h - h / 2;
+          s.px = 0;
+          s.py = 0;
+        }
+
+        const x = (s.x / s.z) * w;
+        const y = (s.y / s.z) * h;
+
+        if (s.px !== 0) {
+          ctx.strokeStyle = `rgba(0, 242, 255, ${Math.min(1, (w - s.z) / w)})`;
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.moveTo(x, y);
+          ctx.lineTo(s.px, s.py);
+          ctx.stroke();
+        }
+
+        s.px = x;
+        s.py = y;
+      }
+
+      ctx.translate(-w / 2, -h / 2);
+      animationFrameId = requestAnimationFrame(draw);
+    };
+
+    draw();
+
+    return () => {
+      window.removeEventListener('resize', resize);
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, []);
+
+  return (
+    <canvas 
+      ref={canvasRef} 
+      className="fixed inset-0 -z-10 pointer-events-none"
+      style={{ background: '#050505' }}
+    />
+  );
+};
+
 // --- Components ---
+
+const Logo = () => (
+  <div className="relative w-14 h-14 group-hover:scale-110 transition-transform duration-500">
+    <div className="absolute inset-0 bg-[#00f2ff] blur-2xl opacity-20 group-hover:opacity-40 transition-opacity" />
+    <svg viewBox="0 0 100 100" className="w-full h-full relative z-10 drop-shadow-[0_0_15px_rgba(0,242,255,0.5)]">
+      <defs>
+        <linearGradient id="logo-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#00f2ff" />
+          <stop offset="50%" stopColor="#7000ff" />
+          <stop offset="100%" stopColor="#00f2ff" />
+        </linearGradient>
+      </defs>
+      <circle cx="50" cy="50" r="45" fill="none" stroke="url(#logo-grad)" strokeWidth="1" strokeDasharray="10 5" className="animate-[spin_20s_linear_infinite]" />
+      <circle cx="50" cy="50" r="35" fill="none" stroke="url(#logo-grad)" strokeWidth="2" strokeDasharray="5 10" className="animate-[spin_15s_linear_infinite_reverse]" />
+      <path d="M50 20 L80 50 L50 80 L20 50 Z" fill="url(#logo-grad)" className="opacity-80" />
+      <path d="M50 30 L70 50 L50 70 L30 50 Z" fill="white" className="opacity-40" />
+      <circle cx="50" cy="50" r="5" fill="white" className="animate-pulse" />
+    </svg>
+  </div>
+);
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -95,13 +209,18 @@ const Navbar = () => {
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 glass border-b border-white/5">
-      <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-gradient-to-br from-[#00f2ff] to-[#7000ff] rounded-lg flex items-center justify-center">
-            <Cpu className="text-white w-5 h-5" />
+      <div className="max-w-7xl mx-auto px-6 h-28 flex items-center justify-between">
+          <div className="flex items-center gap-5 group cursor-pointer">
+            <Logo />
+            <div className="flex flex-col min-w-max pr-4">
+              <span className="font-display font-extrabold text-3xl md:text-5xl tracking-tight leading-none bg-gradient-to-r from-white via-white to-white/60 bg-clip-text text-transparent drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)]">
+                COSMIVON
+              </span>
+              <span className="text-xs uppercase tracking-[0.5em] font-bold text-[#00f2ff] leading-none mt-2 drop-shadow-[0_0_10px_rgba(0,242,255,0.5)]">
+                Technologies
+              </span>
+            </div>
           </div>
-          <span className="font-bold text-xl tracking-tight">COSMIVON</span>
-        </div>
 
         {/* Desktop Nav */}
         <div className="hidden md:flex items-center gap-8">
@@ -153,8 +272,9 @@ const Navbar = () => {
 
 const Hero = () => {
   return (
-    <section className="relative min-h-screen flex items-center pt-20 overflow-hidden cosmic-gradient">
-      <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
+    <section className="relative min-h-screen flex items-center pt-24 overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/50 to-black pointer-events-none" />
+      <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center relative z-10">
         <motion.div
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
@@ -164,7 +284,7 @@ const Hero = () => {
             <Zap className="w-3 h-3" />
             <span>Redefining Digital Efficiency</span>
           </div>
-          <h1 className="text-5xl md:text-7xl font-bold leading-tight mb-6">
+          <h1 className="text-5xl md:text-8xl font-display font-extrabold leading-[0.9] mb-6 tracking-tighter">
             Practical <span className="gradient-text">AI-Powered</span> Products for the Next Wave.
           </h1>
           <p className="text-lg text-white/60 mb-8 max-w-lg">
@@ -225,7 +345,7 @@ const About = () => {
     <section id="about" className="py-24 bg-black">
       <div className="max-w-7xl mx-auto px-6">
         <div className="max-w-3xl">
-          <h2 className="text-3xl md:text-5xl font-bold mb-8">Building the Future, <span className="text-white/40">Step by Step.</span></h2>
+          <h2 className="text-3xl md:text-6xl font-display font-bold mb-8 tracking-tight">Building the Future, <span className="text-white/40">Step by Step.</span></h2>
           <p className="text-xl text-white/60 leading-relaxed mb-12">
             Cosmivon Technologies isn't about hype; it's about pragmatism. We use modern AI tools to design, build, and scale useful software that solves real-world friction. We view AI as a powerful tool and a digital workforce that, when applied correctly, creates immense value.
           </p>
@@ -251,7 +371,7 @@ const Vision = () => {
   return (
     <section id="vision" className="py-24 cosmic-gradient">
       <div className="max-w-7xl mx-auto px-6 text-center">
-        <h2 className="text-3xl md:text-5xl font-bold mb-6">The Infinite Product Model</h2>
+        <h2 className="text-3xl md:text-6xl font-display font-bold mb-6 tracking-tight">The Infinite Product Model</h2>
         <p className="text-xl text-white/60 max-w-2xl mx-auto mb-16">
           Our vision is to create a platform that can build, run, and scale many autonomous, AI-driven products under one roof.
         </p>
@@ -295,7 +415,7 @@ const Products = () => {
     <section id="products" className="py-24 bg-black">
       <div className="max-w-7xl mx-auto px-6">
         <div className="mb-16">
-          <h2 className="text-3xl md:text-5xl font-bold mb-4">Product Domains</h2>
+          <h2 className="text-3xl md:text-6xl font-display font-bold mb-4 tracking-tight">Product Domains</h2>
           <p className="text-white/50 max-w-xl">Where we are active and where we aim to expand our ecosystem.</p>
         </div>
         
@@ -513,11 +633,16 @@ const Contact = () => {
 
 const Footer = () => {
   return (
-    <footer className="py-12 border-t border-white/5">
+    <footer className="py-16 border-t border-white/5 bg-black/80 backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-8">
-        <div className="flex items-center gap-2">
-          <Cpu className="text-[#00f2ff] w-5 h-5" />
-          <span className="font-bold tracking-tight">COSMIVON</span>
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-gradient-to-br from-[#00f2ff] to-[#7000ff] rounded-lg flex items-center justify-center">
+            <Cpu className="text-white w-6 h-6" />
+          </div>
+          <div className="flex flex-col">
+            <span className="font-bold text-xl tracking-tight">COSMIVON</span>
+            <span className="text-[8px] uppercase tracking-widest text-white/40">Technologies</span>
+          </div>
         </div>
         <p className="text-sm text-white/30">
           © {new Date().getFullYear()} Cosmivon Technologies. All rights reserved.
@@ -534,7 +659,8 @@ const Footer = () => {
 export default function App() {
   return (
     <ErrorBoundary>
-      <div className="min-h-screen bg-[#050505] text-white selection:bg-[#00f2ff] selection:text-black">
+      <div className="min-h-screen text-white selection:bg-[#00f2ff] selection:text-black">
+        <Starfield />
         <Navbar />
         <Hero />
         <About />
