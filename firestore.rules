@@ -1,0 +1,46 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    // Collection: contacts
+    // Document ID: auto-generated
+    // Fields:
+    //   - name: string (required, 1-100 chars)
+    //   - email: string (required, valid email format)
+    //   - company: string (optional, 0-100 chars)
+    //   - message: string (required, 1-5000 chars)
+    //   - createdAt: timestamp (required)
+    // ===============================================================
+
+    // Helper Functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isValidEmail(email) {
+      return email is string && email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+    }
+
+    function isValidContact(data) {
+      return data.keys().hasAll(['name', 'email', 'message', 'createdAt']) &&
+             data.name is string && data.name.size() > 0 && data.name.size() <= 100 &&
+             isValidEmail(data.email) &&
+             data.message is string && data.message.size() > 0 && data.message.size() <= 5000 &&
+             data.createdAt is timestamp &&
+             (!('company' in data) || (data.company is string && data.company.size() <= 100));
+    }
+
+    match /contacts/{contactId} {
+      // Anyone can submit a contact form, but only once (no updates/deletes)
+      allow create: if isValidContact(request.resource.data);
+      
+      // Only admins can read contact submissions
+      // For this prototype, we'll assume admin check via email or a specific role
+      // But since Auth isn't required for this version, we'll keep it locked down
+      allow read: if false; 
+      allow update, delete: if false;
+    }
+  }
+}
