@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Honest research on why B2B SaaS customers actually churn. One briefing per week.">
+  <title>Cosmivon — Retention research for B2B SaaS founders</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=JetBrains+Mono:wght@500;600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      background:#fafaf9;
+      color:#0f2942;
+      font-family:"Inter",-apple-system,sans-serif;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:40px 24px;
+      line-height:1.6;
+    }
+    .wrap{max-width:580px;width:100%}
+    .kicker{
+      font-family:"JetBrains Mono",monospace;
+      font-size:11px;
+      color:#14b8a6;
+      text-transform:uppercase;
+      letter-spacing:0.18em;
+      margin-bottom:28px;
+      font-weight:600;
+    }
+    h1{
+      font-family:"Fraunces",Georgia,serif;
+      font-size:52px;
+      line-height:1.05;
+      letter-spacing:-0.028em;
+      margin-bottom:24px;
+      color:#0f2942;
+      font-weight:700;
+    }
+    h1 em{
+      font-style:italic;
+      color:#2dd4bf;
+      font-weight:400;
+    }
+    p{
+      color:#475569;
+      font-size:17px;
+      margin-bottom:14px;
+    }
+    form{
+      margin-top:40px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    input[type=email]{
+      flex:1;
+      min-width:260px;
+      padding:15px 20px;
+      background:#fff;
+      border:1px solid #cbd5e1;
+      border-radius:8px;
+      color:#0f2942;
+      font-family:inherit;
+      font-size:16px;
+      transition:border-color 0.15s, box-shadow 0.15s;
+    }
+    input[type=email]:focus{
+      outline:none;
+      border-color:#2dd4bf;
+      box-shadow:0 0 0 3px rgba(45,212,191,0.15);
+    }
+    button{
+      padding:15px 24px;
+      background:#2dd4bf;
+      color:#fff;
+      border:none;
+      border-radius:8px;
+      font-family:"JetBrains Mono",monospace;
+      font-size:13px;
+      font-weight:600;
+      text-transform:uppercase;
+      letter-spacing:0.08em;
+      cursor:pointer;
+      transition:transform 0.1s, background 0.1s;
+    }
+    button:hover:not(:disabled){
+      transform:translateY(-1px);
+      background:#14b8a6;
+    }
+    button:disabled{
+      opacity:0.6;
+      cursor:not-allowed;
+    }
+    .msg{
+      margin-top:18px;
+      font-size:14px;
+      color:#475569;
+      min-height:22px;
+    }
+    .msg.ok{color:#059669;font-weight:500}
+    .msg.err{color:#dc2626;font-weight:500}
+    .footer{
+      margin-top:56px;
+      font-family:"JetBrains Mono",monospace;
+      font-size:11px;
+      color:#94a3b8;
+      letter-spacing:0.1em;
+    }
+    @media (max-width:520px){
+      h1{font-size:38px}
+      form{flex-direction:column}
+      input[type=email]{min-width:0}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="kicker">Cosmivon · retention research</div>
+    <h1>Honest research on why B2B SaaS customers <em>actually</em> churn.</h1>
+    <p>One briefing per week. No newsletter-bro hype. No vendor pitch dressed up as research.</p>
+    <p>Drop your email and we'll send you the first briefing next Monday.</p>
+    <form id="f">
+      <input type="email" name="email" placeholder="you@company.com" required autocomplete="email">
+      <button type="submit" id="b">Join waitlist</button>
+    </form>
+    <div id="m" class="msg"></div>
+    <div class="footer">Cosmivon Technologies · PulseRetain launches May 2026</div>
+  </div>
+  <script>
+    const f = document.getElementById('f');
+    const m = document.getElementById('m');
+    const b = document.getElementById('b');
+    f.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      b.disabled = true;
+      m.className = 'msg';
+      m.textContent = 'Signing you up...';
+      const email = new FormData(f).get('email');
+      try {
+        const r = await fetch('/api/subscribe', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({email})
+        });
+        if (r.ok) {
+          m.className = 'msg ok';
+          m.textContent = 'Done. Briefing arrives Monday.';
+          f.reset();
+        } else {
+          m.className = 'msg err';
+          m.textContent = 'Something went wrong. Try again?';
+        }
+      } catch (err) {
+        m.className = 'msg err';
+        m.textContent = 'Network issue. Try again?';
+      } finally {
+        b.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
