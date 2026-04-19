@@ -3,165 +3,294 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Honest research on why B2B SaaS customers actually churn. One briefing per week.">
-  <title>Cosmivon — Retention research for B2B SaaS founders</title>
+  <meta name="description" content="Cosmivon Technologies — a product studio building focused B2B SaaS software. PulseRetain launching May 2026.">
+  <meta property="og:title" content="Cosmivon Technologies">
+  <meta property="og:description" content="We build focused, research-backed B2B SaaS software. PulseRetain launches May 2026.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="/logo.svg">
+  <title>Cosmivon Technologies — B2B SaaS product studio</title>
+  <link rel="icon" type="image/svg+xml" href="/logo.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=JetBrains+Mono:wght@500;600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --navy: #0f2942;
+      --navy-dark: #0A1A3C;
+      --teal: #2dd4bf;
+      --teal-dark: #14b8a6;
+      --ink: #0f2942;
+      --ink-2: #475569;
+      --ink-3: #94a3b8;
+      --ink-4: #cbd5e1;
+      --bg: #fafaf9;
+      --panel: #ffffff;
+      --line: #e5e7eb;
+    }
     *{margin:0;padding:0;box-sizing:border-box}
     html{scroll-behavior:smooth}
     body{
-      background:#fafaf9;
-      color:#0f2942;
-      font-family:"Inter",-apple-system,sans-serif;
-      min-height:100vh;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:40px 24px;
-      line-height:1.6;
-    }
-    .wrap{max-width:580px;width:100%}
-    .kicker{
-      font-family:"JetBrains Mono",monospace;
-      font-size:11px;
-      color:#14b8a6;
-      text-transform:uppercase;
-      letter-spacing:0.18em;
-      margin-bottom:28px;
-      font-weight:600;
-    }
-    h1{
-      font-family:"Fraunces",Georgia,serif;
-      font-size:52px;
-      line-height:1.05;
-      letter-spacing:-0.028em;
-      margin-bottom:24px;
-      color:#0f2942;
-      font-weight:700;
-    }
-    h1 em{
-      font-style:italic;
-      color:#2dd4bf;
-      font-weight:400;
-    }
-    p{
-      color:#475569;
-      font-size:17px;
-      margin-bottom:14px;
-    }
-    form{
-      margin-top:40px;
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-    }
-    input[type=email]{
-      flex:1;
-      min-width:260px;
-      padding:15px 20px;
-      background:#fff;
-      border:1px solid #cbd5e1;
-      border-radius:8px;
-      color:#0f2942;
-      font-family:inherit;
+      background:var(--bg);
+      color:var(--ink);
+      font-family:"Inter",-apple-system,BlinkMacSystemFont,sans-serif;
       font-size:16px;
-      transition:border-color 0.15s, box-shadow 0.15s;
+      line-height:1.6;
+      -webkit-font-smoothing:antialiased;
     }
-    input[type=email]:focus{
-      outline:none;
-      border-color:#2dd4bf;
-      box-shadow:0 0 0 3px rgba(45,212,191,0.15);
+    .container{max-width:860px;margin:0 auto;padding:0 32px}
+
+    nav{padding:28px 0 0;display:flex;align-items:center;justify-content:space-between}
+    nav .brand{display:flex;align-items:center;gap:10px}
+    nav .brand img{height:36px;width:auto;display:block}
+    nav .brand-name{font-family:"Fraunces",serif;font-size:20px;font-weight:700;color:var(--navy);letter-spacing:-0.01em}
+    nav .nav-links{display:flex;gap:28px;font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-2);letter-spacing:0.05em}
+    nav .nav-links a{color:var(--ink-2);text-decoration:none;transition:color 0.15s}
+    nav .nav-links a:hover{color:var(--teal-dark)}
+
+    .hero{padding:80px 0 64px;text-align:center}
+    .hero .logo-large{height:140px;width:auto;margin:0 auto 32px;display:block}
+    .hero .kicker{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--teal-dark);text-transform:uppercase;letter-spacing:0.2em;margin-bottom:20px;font-weight:600}
+    .hero h1{font-family:"Fraunces",Georgia,serif;font-size:56px;line-height:1.05;letter-spacing:-0.03em;color:var(--navy);font-weight:700;margin-bottom:24px;max-width:720px;margin-left:auto;margin-right:auto}
+    .hero h1 em{font-style:italic;color:var(--teal);font-weight:400}
+    .hero .subhead{font-size:18px;color:var(--ink-2);max-width:520px;margin:0 auto 16px;line-height:1.55}
+    .hero .meta{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-3);letter-spacing:0.1em;margin-top:28px}
+    .hero .meta .dot{color:var(--teal);margin:0 10px}
+
+    .section{padding:64px 0;border-top:1px solid var(--line)}
+    .section-label{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--teal-dark);text-transform:uppercase;letter-spacing:0.2em;margin-bottom:24px;font-weight:600}
+    .section h2{font-family:"Fraunces",serif;font-size:34px;color:var(--navy);font-weight:600;letter-spacing:-0.02em;margin-bottom:32px;line-height:1.2}
+
+    .product-card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:32px;margin-bottom:20px;position:relative;transition:border-color 0.2s, transform 0.15s, box-shadow 0.2s}
+    .product-card.featured{border-color:var(--teal);border-left-width:3px}
+    .product-card.featured:hover{transform:translateY(-2px);box-shadow:0 10px 30px -10px rgba(45,212,191,0.15)}
+    .product-card.soon{border-style:dashed;opacity:0.85}
+    .card-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:8px;flex-wrap:wrap}
+    .card-title{font-family:"Fraunces",serif;font-size:24px;font-weight:600;color:var(--navy);letter-spacing:-0.01em}
+    .status-pill{font-family:"JetBrains Mono",monospace;font-size:10px;padding:4px 10px;border-radius:99px;letter-spacing:0.1em;font-weight:600;text-transform:uppercase;white-space:nowrap}
+    .status-pill.active{background:rgba(45,212,191,0.12);color:var(--teal-dark);border:1px solid rgba(45,212,191,0.3)}
+    .status-pill.soon{background:rgba(148,163,184,0.12);color:var(--ink-3);border:1px solid rgba(148,163,184,0.3)}
+    .card-tagline{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--teal-dark);margin-bottom:12px;letter-spacing:0.05em}
+    .card-description{color:var(--ink-2);font-size:16px;line-height:1.6;margin-bottom:20px}
+    .card-cta{display:inline-flex;align-items:center;gap:8px;padding:12px 20px;background:var(--teal);color:#ffffff;border:none;border-radius:8px;font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;cursor:pointer;text-decoration:none;transition:background 0.15s, transform 0.1s}
+    .card-cta:hover{background:var(--teal-dark);transform:translateY(-1px)}
+    .card-cta .arrow{font-size:14px}
+
+    .waitlist-form{display:none;margin-top:20px;padding-top:20px;border-top:1px solid var(--line)}
+    .waitlist-form.open{display:block}
+    .waitlist-form form{display:flex;gap:8px;flex-wrap:wrap}
+    .waitlist-form input[type=email]{flex:1;min-width:220px;padding:12px 16px;background:var(--bg);border:1px solid var(--ink-4);border-radius:8px;color:var(--navy);font-family:inherit;font-size:15px;transition:border-color 0.15s, box-shadow 0.15s}
+    .waitlist-form input[type=email]:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 3px rgba(45,212,191,0.15)}
+    .waitlist-form button{padding:12px 20px;background:var(--navy);color:#ffffff;border:none;border-radius:8px;font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;cursor:pointer}
+    .waitlist-form button:disabled{opacity:0.5;cursor:not-allowed}
+    .waitlist-msg{margin-top:12px;font-size:13px;min-height:18px}
+    .waitlist-msg.ok{color:#059669;font-weight:500}
+    .waitlist-msg.err{color:#dc2626;font-weight:500}
+
+    .research-box{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:32px}
+    .research-box p{color:var(--ink-2);font-size:16px;line-height:1.6;margin-bottom:16px}
+    .research-box .launch-date{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--teal-dark);letter-spacing:0.08em;margin-bottom:20px}
+
+    .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px}
+    .about-cell p{color:var(--ink-2);font-size:15px;margin-bottom:12px;line-height:1.65}
+    .about-cell h3{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--teal-dark);text-transform:uppercase;letter-spacing:0.15em;margin-bottom:12px;font-weight:600}
+
+    footer{border-top:1px solid var(--line);padding:40px 0 60px;margin-top:40px}
+    footer .footer-content{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px;font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-3);letter-spacing:0.05em}
+    footer .brand-footer{display:flex;align-items:center;gap:10px}
+    footer .brand-footer img{height:22px;width:auto;display:block}
+
+    @media (max-width:700px){
+      .container{padding:0 20px}
+      .hero{padding:56px 0 40px}
+      .hero h1{font-size:38px}
+      .hero .logo-large{height:110px}
+      .section{padding:48px 0}
+      .section h2{font-size:26px}
+      .product-card{padding:24px}
+      .card-title{font-size:20px}
+      .about-grid{grid-template-columns:1fr;gap:24px}
+      nav .nav-links{gap:16px;font-size:11px}
     }
-    button{
-      padding:15px 24px;
-      background:#2dd4bf;
-      color:#fff;
-      border:none;
-      border-radius:8px;
-      font-family:"JetBrains Mono",monospace;
-      font-size:13px;
-      font-weight:600;
-      text-transform:uppercase;
-      letter-spacing:0.08em;
-      cursor:pointer;
-      transition:transform 0.1s, background 0.1s;
-    }
-    button:hover:not(:disabled){
-      transform:translateY(-1px);
-      background:#14b8a6;
-    }
-    button:disabled{
-      opacity:0.6;
-      cursor:not-allowed;
-    }
-    .msg{
-      margin-top:18px;
-      font-size:14px;
-      color:#475569;
-      min-height:22px;
-    }
-    .msg.ok{color:#059669;font-weight:500}
-    .msg.err{color:#dc2626;font-weight:500}
-    .footer{
-      margin-top:56px;
-      font-family:"JetBrains Mono",monospace;
-      font-size:11px;
-      color:#94a3b8;
-      letter-spacing:0.1em;
-    }
-    @media (max-width:520px){
-      h1{font-size:38px}
-      form{flex-direction:column}
-      input[type=email]{min-width:0}
+    @media (max-width:480px){
+      .hero h1{font-size:32px}
+      .card-header{flex-direction:column;gap:8px}
+      .waitlist-form form{flex-direction:column}
+      .waitlist-form input[type=email]{min-width:0}
+      footer .footer-content{flex-direction:column;align-items:flex-start}
     }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="kicker">Cosmivon · retention research</div>
-    <h1>Honest research on why B2B SaaS customers <em>actually</em> churn.</h1>
-    <p>One briefing per week. No newsletter-bro hype. No vendor pitch dressed up as research.</p>
-    <p>Drop your email and we'll send you the first briefing next Monday.</p>
-    <form id="f">
-      <input type="email" name="email" placeholder="you@company.com" required autocomplete="email">
-      <button type="submit" id="b">Join waitlist</button>
-    </form>
-    <div id="m" class="msg"></div>
-    <div class="footer">Cosmivon Technologies · PulseRetain launches May 2026</div>
+
+<div class="container">
+
+<nav>
+  <div class="brand">
+    <img src="/logo.svg" alt="Cosmivon">
+    <span class="brand-name">Cosmivon</span>
   </div>
-  <script>
-    const f = document.getElementById('f');
-    const m = document.getElementById('m');
-    const b = document.getElementById('b');
-    f.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      b.disabled = true;
-      m.className = 'msg';
-      m.textContent = 'Signing you up...';
-      const email = new FormData(f).get('email');
-      try {
-        const r = await fetch('/api/subscribe', {
-          method: 'POST',
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({email})
-        });
-        if (r.ok) {
-          m.className = 'msg ok';
-          m.textContent = 'Done. Briefing arrives Monday.';
-          f.reset();
-        } else {
-          m.className = 'msg err';
-          m.textContent = 'Something went wrong. Try again?';
-        }
-      } catch (err) {
-        m.className = 'msg err';
-        m.textContent = 'Network issue. Try again?';
-      } finally {
-        b.disabled = false;
+  <div class="nav-links">
+    <a href="#products">Products</a>
+    <a href="#research">Research</a>
+    <a href="#about">About</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <img src="/logo.svg" alt="Cosmivon Technologies" class="logo-large">
+  <div class="kicker">Cosmivon Technologies</div>
+  <h1>A product studio for <em>focused</em> B2B SaaS software.</h1>
+  <p class="subhead">Research-driven. Multi-product. Built for founders past the experiment stage.</p>
+  <div class="meta">
+    <span>Est. 2026</span>
+    <span class="dot">·</span>
+    <span>Kallakurichi, IN</span>
+    <span class="dot">·</span>
+    <span>Trademark filed</span>
+  </div>
+</section>
+
+<section class="section" id="products">
+  <div class="section-label">Products</div>
+  <h2>What we're building.</h2>
+
+  <div class="product-card featured">
+    <div class="card-header">
+      <div class="card-title">PulseRetain</div>
+      <div class="status-pill active">Launching May 2026</div>
+    </div>
+    <div class="card-tagline">Billing health intelligence for B2B SaaS</div>
+    <div class="card-description">
+      Most churn happens quietly — a failed payment, a downgrade, a support ticket that goes unanswered. PulseRetain catches the signals 30 days before they hit revenue, gives founders a clear health score per customer, and runs the retention plays that actually work. Built for teams of 10–500 customers who are past "just email them" and haven't hit "hire a CS team."
+    </div>
+    <button class="card-cta" onclick="toggleWaitlist('pulseretain')">
+      Join the waitlist <span class="arrow">→</span>
+    </button>
+    <div class="waitlist-form" id="waitlist-pulseretain">
+      <form onsubmit="submitWaitlist(event, 'pulseretain')">
+        <input type="email" name="email" placeholder="you@company.com" required autocomplete="email">
+        <button type="submit">Notify me</button>
+      </form>
+      <div class="waitlist-msg" id="msg-pulseretain"></div>
+    </div>
+  </div>
+
+  <div class="product-card soon">
+    <div class="card-header">
+      <div class="card-title">Product 2</div>
+      <div class="status-pill soon">Later in 2026</div>
+    </div>
+    <div class="card-tagline">Something founders will actually use</div>
+    <div class="card-description">
+      Our second product is in early scoping. Like PulseRetain, it'll be narrow, focused, and earned through real research. We'll announce more when it's real, not before.
+    </div>
+  </div>
+</section>
+
+<section class="section" id="research">
+  <div class="section-label">Research</div>
+  <h2>We publish what we learn.</h2>
+
+  <div class="research-box">
+    <div class="launch-date">Archive launches April 26, 2026</div>
+    <p>
+      Every week, we publish a digest of what's changing in B2B SaaS retention, billing health, and customer behavior. No vendor pitches dressed as insight. No recycled top-10 lists. Just what's actually useful for founders running the kind of companies we build for.
+    </p>
+    <p>
+      Drop your email to get the first issue when it ships.
+    </p>
+    <div class="waitlist-form open" style="border-top:none;padding-top:8px">
+      <form onsubmit="submitWaitlist(event, 'research')">
+        <input type="email" name="email" placeholder="you@company.com" required autocomplete="email">
+        <button type="submit">Subscribe</button>
+      </form>
+      <div class="waitlist-msg" id="msg-research"></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="about">
+  <div class="section-label">About</div>
+  <h2>Small studio. Big standards.</h2>
+
+  <div class="about-grid">
+    <div class="about-cell">
+      <h3>The approach</h3>
+      <p>
+        Cosmivon is a solo-founded, research-driven product company based in Tamil Nadu, India. We build narrow software for narrow problems — starting with retention, because that's where most B2B SaaS companies quietly bleed.
+      </p>
+      <p>
+        Every product we ship is earned through research first, code second. No "AI-first" theatre. No investor-deck roadmaps. Just tools that founders use on Monday morning.
+      </p>
+    </div>
+    <div class="about-cell">
+      <h3>The stack</h3>
+      <p>
+        We use modern, boring infrastructure: TypeScript, Postgres, Next.js, Docker, and carefully chosen AI integrations where they add real value.
+      </p>
+      <p>
+        We run lean. We ship weekly. We prefer quality over quantity, focused products over bundled suites, and real customer conversations over growth hacks.
+      </p>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<footer>
+  <div class="container">
+    <div class="footer-content">
+      <div class="brand-footer">
+        <img src="/logo.svg" alt="Cosmivon">
+        <span>COSMIVON TECHNOLOGIES</span>
+      </div>
+      <div>© 2026 · Kallakurichi, TN · All rights reserved</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  function toggleWaitlist(id) {
+    const f = document.getElementById('waitlist-' + id);
+    f.classList.toggle('open');
+    if (f.classList.contains('open')) {
+      setTimeout(() => f.querySelector('input').focus(), 100);
+    }
+  }
+
+  async function submitWaitlist(e, source) {
+    e.preventDefault();
+    const form = e.target;
+    const msg = document.getElementById('msg-' + source);
+    const btn = form.querySelector('button');
+    btn.disabled = true;
+    msg.className = 'waitlist-msg';
+    msg.textContent = 'Signing you up...';
+    const email = new FormData(form).get('email');
+    try {
+      const r = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, source })
+      });
+      if (r.ok) {
+        msg.className = 'waitlist-msg ok';
+        msg.textContent = source === 'research'
+          ? 'Done. First issue arrives when we ship.'
+          : "Done. We'll email you when PulseRetain launches.";
+        form.reset();
+      } else {
+        msg.className = 'waitlist-msg err';
+        msg.textContent = 'Something went wrong. Try again?';
       }
-    });
-  </script>
+    } catch (err) {
+      msg.className = 'waitlist-msg err';
+      msg.textContent = 'Network issue. Try again?';
+    } finally {
+      btn.disabled = false;
+    }
+  }
+</script>
+
 </body>
 </html>
